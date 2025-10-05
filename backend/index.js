@@ -55,5 +55,6 @@ app.get("/me", (req, res) => {
     res.status(401).json({ error: "無効なトークンです" });
   }
 });
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-app.listen(5001, () => console.log("✅ Server running on http://localhost:5001"));
