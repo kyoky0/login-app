@@ -8,7 +8,7 @@ const app = express();
 const db = new sqlite3.Database("./users.db");
 const SECRET = "secretkey123"; // JWT用の秘密鍵
 
-app.use(cors());
+app.use(cors()); // CORS許可
 app.use(express.json());
 
 // ユーザー用テーブル作成
@@ -22,10 +22,14 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
   const hashed = bcrypt.hashSync(password, 10);
-  db.run("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashed], function (err) {
-    if (err) return res.status(400).json({ error: "ユーザー名が既に存在します" });
-    res.json({ success: true });
-  });
+  db.run(
+    "INSERT INTO users (username, password) VALUES (?, ?)",
+    [username, hashed],
+    function (err) {
+      if (err) return res.status(400).json({ error: "ユーザー名が既に存在します" });
+      res.json({ success: true });
+    }
+  );
 });
 
 // ログイン
@@ -55,6 +59,6 @@ app.get("/me", (req, res) => {
     res.status(401).json({ error: "無効なトークンです" });
   }
 });
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
